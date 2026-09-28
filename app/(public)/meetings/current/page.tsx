@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { getMeetings } from '@/lib/meetings-db';
+import { getMeetingByDate } from '@/lib/meetings-db';
 
 function getMostRecentSunday(): string {
   const today = new Date();
@@ -17,11 +17,11 @@ function getMostRecentSunday(): string {
 
 export default async function CurrentMeetingPage() {
   const sunday = getMostRecentSunday();
-  const meetings = await getMeetings(sunday);
+  const meeting = await getMeetingByDate(sunday);
 
-  if (meetings.length === 0) {
+  if (!meeting) {
     redirect('/meetings');
   }
 
-  redirect(`/meetings/${meetings[0].id}`);
+  redirect(`/meetings/${meeting.id}`);
 }

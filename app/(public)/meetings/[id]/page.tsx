@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+
 import MeetingDetail from '@/components/MeetingDetail';
 import { getMeetingById } from '@/lib/meetings-db';
 
@@ -17,7 +18,7 @@ export default async function MeetingPage({
         notFound();
     }
 
-    const meeting = getMeetingById(meetingId);
+    const meeting = await getMeetingById(meetingId);
 
     if (!meeting) {
         notFound();

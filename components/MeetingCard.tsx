@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 import type { SacramentMeeting } from '@/lib/types';
 
 interface MeetingCardProps {
@@ -10,7 +11,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
         <article className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="mb-4">
                 <p className="text-sm font-medium uppercase tracking-wide text-blue-700">
-                    {meeting.meetingType} meeting
+                    {meeting.meetingType === 'sacrament'
+                        ? 'Sacrament Meeting'
+                        : meeting.meetingType === 'first-sunday-sacrament'
+                            ? 'Sacrament Meeting: First Sunday'
+                            : meeting.meetingType === 'stake-conference'
+                                ? 'Stake Conference'
+                                : 'General Conference'}
                 </p>
 
                 <h2 className="mt-1 text-xl font-bold text-gray-900">
@@ -27,6 +34,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
                 <p>
                     <strong>Presiding:</strong> {meeting.presiding}
                 </p>
+
                 <p>
                     <strong>Conducting:</strong> {meeting.conducting}
                 </p>

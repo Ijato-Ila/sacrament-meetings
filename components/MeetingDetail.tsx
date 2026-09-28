@@ -6,22 +6,40 @@ interface MeetingDetailProps {
     meeting: SacramentMeeting;
 }
 
-export default function MeetingDetail({ meeting }: MeetingDetailProps) {
-    const date = new Date(`${meeting.date}T00:00:00`).toLocaleDateString(
-        'en-NG',
-        {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }
-    );
+function getMeetingTypeLabel(
+    meetingType: SacramentMeeting['meetingType'],
+): string {
+    switch (meetingType) {
+        case 'sacrament':
+            return 'Sacrament Meeting';
+        case 'first-sunday-sacrament':
+            return 'Sacrament Meeting: First Sunday';
+        case 'stake-conference':
+            return 'Stake Conference';
+        case 'general-conference':
+            return 'General Conference';
+        default:
+            return 'Sacrament Meeting';
+    }
+}
+
+export default function MeetingDetail({
+    meeting,
+}: MeetingDetailProps) {
+    const date = new Date(
+        `${meeting.date}T00:00:00`,
+    ).toLocaleDateString('en-NG', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
 
     return (
         <article className="mx-auto max-w-4xl rounded-xl bg-white p-6 shadow-sm print:shadow-none">
             <header className="border-b border-gray-200 pb-6">
                 <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-                    {meeting.meetingType} meeting
+                    {getMeetingTypeLabel(meeting.meetingType)}
                 </p>
 
                 <h1 className="mt-2 text-3xl font-bold text-gray-900">
@@ -34,6 +52,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
                     <p>
                         <strong>Presiding:</strong> {meeting.presiding}
                     </p>
+
                     <p>
                         <strong>Conducting:</strong> {meeting.conducting}
                     </p>
@@ -42,7 +61,10 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
 
             {meeting.announcements && meeting.announcements.length > 0 && (
                 <section className="border-b border-gray-200 py-6">
-                    <h2 className="text-xl font-bold text-gray-900">Announcements</h2>
+                    <h2 className="text-xl font-bold text-gray-900">
+                        Announcements
+                    </h2>
+
                     <ul className="mt-3 list-disc space-y-1 pl-5 text-gray-700">
                         {meeting.announcements.map((announcement) => (
                             <li key={announcement}>{announcement}</li>
@@ -52,31 +74,41 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
             )}
 
             <section className="border-b border-gray-200 py-6">
-                <h2 className="text-xl font-bold text-gray-900">Opening</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                    Opening
+                </h2>
 
                 <div className="mt-4 space-y-3 text-gray-700">
                     <p>
-                        <strong>Opening Hymn:</strong> Hymn {meeting.openingHymn.number} —{' '}
+                        <strong>Opening Hymn:</strong> Hymn{' '}
+                        {meeting.openingHymn.number} —{' '}
                         {meeting.openingHymn.title}
                     </p>
 
                     <p>
-                        <strong>Opening Prayer:</strong> {meeting.openingPrayer}
+                        <strong>Opening Prayer:</strong>{' '}
+                        {meeting.openingPrayer}
                     </p>
                 </div>
             </section>
 
             <section className="border-b border-gray-200 py-6">
-                <h2 className="text-xl font-bold text-gray-900">Ward Business</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                    Ward Business
+                </h2>
 
                 {meeting.wardBusiness.length > 0 ? (
                     <ul className="mt-3 list-disc space-y-2 pl-5 text-gray-700">
                         {meeting.wardBusiness.map((item) => (
-                            <li key={item.description}>{item.description}</li>
+                            <li key={item.description}>
+                                {item.description}
+                            </li>
                         ))}
                     </ul>
                 ) : (
-                    <p className="mt-3 text-gray-600">No ward business.</p>
+                    <p className="mt-3 text-gray-600">
+                        No ward business.
+                    </p>
                 )}
 
                 <p className="mt-4 text-gray-700">
@@ -92,11 +124,14 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
 
                 <p className="mt-4 text-gray-700">
                     <strong>Sacrament Hymn:</strong> Hymn{' '}
-                    {meeting.sacramentHymn.number} — {meeting.sacramentHymn.title}
+                    {meeting.sacramentHymn.number} —{' '}
+                    {meeting.sacramentHymn.title}
                 </p>
 
                 <div className="mt-6">
-                    <h3 className="font-semibold text-gray-900">Speakers and Music</h3>
+                    <h3 className="font-semibold text-gray-900">
+                        Speakers and Music
+                    </h3>
 
                     <ul className="mt-3 space-y-4">
                         {meeting.speakers.map((item) => (
@@ -107,6 +142,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
                                 <p className="font-semibold text-gray-900">
                                     {item.name}
                                 </p>
+
                                 <p className="text-sm capitalize text-blue-700">
                                     {item.type.replace('-', ' ')}
                                 </p>
@@ -123,16 +159,20 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
             </section>
 
             <section className="py-6">
-                <h2 className="text-xl font-bold text-gray-900">Closing</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                    Closing
+                </h2>
 
                 <div className="mt-4 space-y-3 text-gray-700">
                     <p>
-                        <strong>Closing Hymn:</strong> Hymn {meeting.closingHymn.number} —{' '}
+                        <strong>Closing Hymn:</strong> Hymn{' '}
+                        {meeting.closingHymn.number} —{' '}
                         {meeting.closingHymn.title}
                     </p>
 
                     <p>
-                        <strong>Closing Prayer:</strong> {meeting.closingPrayer}
+                        <strong>Closing Prayer:</strong>{' '}
+                        {meeting.closingPrayer}
                     </p>
                 </div>
             </section>
