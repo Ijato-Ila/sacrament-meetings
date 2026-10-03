@@ -1,3 +1,8 @@
+import { notFound } from 'next/navigation';
+
+import MeetingForm from '@/components/MeetingForm';
+import { getMeetingById } from '@/lib/meetings-db';
+
 interface EditMeetingPageProps {
     params: Promise<{
         id: string;
@@ -8,20 +13,32 @@ export default async function EditMeetingPage({
     params,
 }: EditMeetingPageProps) {
     const { id } = await params;
+    const meetingId = Number(id);
+
+    if (!Number.isInteger(meetingId)) {
+        notFound();
+    }
+
+    const meeting = await getMeetingById(meetingId);
+
+    if (!meeting) {
+        notFound();
+    }
 
     return (
-        <div>
+        <main className="mx-auto max-w-3xl px-4 py-8">
             <h1 className="text-3xl font-bold text-gray-900">
                 Edit Meeting
             </h1>
 
-            <p className="mt-2 text-gray-600">
-                Meeting editing will be available here.
+            <p className="mt-2 mb-8 text-gray-600">
+                Update the details for this sacrament meeting.
             </p>
 
-            <p className="mt-4 text-sm text-gray-500">
-                Meeting ID: {id}
-            </p>
-        </div>
+            <MeetingForm
+                meeting={meeting}
+                meetingId={meeting.id}
+            />
+        </main>
     );
 }

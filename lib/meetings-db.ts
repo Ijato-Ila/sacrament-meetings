@@ -161,22 +161,121 @@ export async function getMeetingByDate(
     return mapMeeting(rows[0] as MeetingRow);
 }
 
-// Mutation stubs for future admin functionality.
 export async function addMeeting(
-    _meeting: Omit<SacramentMeeting, 'id'>,
+    meeting: Omit<SacramentMeeting, 'id'>,
 ): Promise<void> {
-    // TODO: Implement database INSERT.
+    await sql`
+        INSERT INTO meetings (
+            date,
+            meeting_type,
+            presiding,
+            conducting,
+            announcements,
+            opening_hymn,
+            opening_prayer,
+            ward_business,
+            stake_business,
+            sacrament_hymn,
+            speakers,
+            closing_hymn,
+            closing_prayer
+        )
+        VALUES (
+            ${meeting.date},
+            ${meeting.meetingType},
+            ${meeting.presiding},
+            ${meeting.conducting},
+            ${meeting.announcements ?? []},
+            ${JSON.stringify(meeting.openingHymn)},
+            ${meeting.openingPrayer},
+            ${JSON.stringify(meeting.wardBusiness)},
+            ${meeting.stakeBusiness},
+            ${JSON.stringify(meeting.sacramentHymn)},
+            ${JSON.stringify(meeting.speakers)},
+            ${JSON.stringify(meeting.closingHymn)},
+            ${meeting.closingPrayer}
+        )
+    `;
 }
 
 export async function updateMeeting(
-    _id: number,
-    _meeting: Partial<SacramentMeeting>,
+    id: number,
+    meeting: Partial<Omit<SacramentMeeting, 'id'>>,
 ): Promise<void> {
-    // TODO: Implement database UPDATE.
+    await sql`
+        UPDATE meetings
+        SET
+            date = COALESCE(${meeting.date ?? null}, date),
+            meeting_type = COALESCE(
+                ${meeting.meetingType ?? null},
+                meeting_type
+            ),
+            presiding = COALESCE(
+                ${meeting.presiding ?? null},
+                presiding
+            ),
+            conducting = COALESCE(
+                ${meeting.conducting ?? null},
+                conducting
+            ),
+            announcements = COALESCE(
+                ${meeting.announcements ?? null},
+                announcements
+            ),
+            opening_hymn = COALESCE(
+                ${meeting.openingHymn
+            ? JSON.stringify(meeting.openingHymn)
+            : null
+        },
+                opening_hymn
+            ),
+            opening_prayer = COALESCE(
+                ${meeting.openingPrayer ?? null},
+                opening_prayer
+            ),
+            ward_business = COALESCE(
+                ${meeting.wardBusiness
+            ? JSON.stringify(meeting.wardBusiness)
+            : null
+        },
+                ward_business
+            ),
+            stake_business = COALESCE(
+                ${meeting.stakeBusiness ?? null},
+                stake_business
+            ),
+            sacrament_hymn = COALESCE(
+                ${meeting.sacramentHymn
+            ? JSON.stringify(meeting.sacramentHymn)
+            : null
+        },
+                sacrament_hymn
+            ),
+            speakers = COALESCE(
+                ${meeting.speakers
+            ? JSON.stringify(meeting.speakers)
+            : null
+        },
+                speakers
+            ),
+            closing_hymn = COALESCE(
+                ${meeting.closingHymn
+            ? JSON.stringify(meeting.closingHymn)
+            : null
+        },
+                closing_hymn
+            ),
+            closing_prayer = COALESCE(
+                ${meeting.closingPrayer ?? null},
+                closing_prayer
+            )
+        WHERE id = ${id}
+    `;
 }
 
-export async function deleteMeeting(
-    _id: number,
-): Promise<void> {
-    // TODO: Implement database DELETE.
+export async function deleteMeeting(id: number): Promise<void> {
+    await sql`
+        DELETE FROM meetings
+        WHERE id = ${id}
+    `;
 }
